@@ -55,154 +55,156 @@ dotnet dab --version
 
 Get these from SQL database in fabric, ADO.NET or JDBC connection string:
 
-In Powershell:
-$Server   = "xxxx.database.fabric.microsoft.com"
-$Port     = "1433"
-$Database = "example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+In Powershell: <br>
+$Server   = "xxxx.database.fabric.microsoft.com" <br>
+$Port     = "1433" <br>
+$Database = "example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" <br>
 
-# Common JDBC-style options; adjust if your environment requires something different
-$ConnStr  = "Server=tcp:$Server,$Port;Database=$Database;Encrypt=True;TrustServerCertificate=True;"
+# Common JDBC-style options; adjust if your environment requires something different <br>
+$ConnStr  = "Server=tcp:$Server,$Port;Database=$Database;Encrypt=True;TrustServerCertificate=True;" <br>
 
-dab init --database-type mssql --host-mode Development --connection-string "$ConnStr"
+dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" <br>
 
-if failed, run this:
+if failed, run this: <br>
 
-dotnet tool run dab init `
-  --database-type mssql `
-  --host-mode Development `
-  --connection-string "$ConnStr"
+dotnet tool run dab init ` <br>
+  --database-type mssql ` <br>
+  --host-mode Development `  <br>
+  --connection-string "$ConnStr"  <br>
 
-add tables:
+add tables: <br>
 
-$Tables = @(
-  "incident",
-  "problem"
+$Tables = @(  <br>
+  "incident",  <br>
+  "problem"  <br>
 )
 
-foreach ($t in $Tables) {
-  dotnet tool run dab add $t `
-    --source "dbo.$t" `
-    --permissions "authenticated:*"
+foreach ($t in $Tables) {  <br>
+  dotnet tool run dab add $t `  <br>
+    --source "dbo.$t" `  <br>
+    --permissions "authenticated:*"  <br>
 }
 
 
 ### Step2A - register app, to use this app identity representing a tenant
 
-register app: sql-msp-server in Microsoft Entra ID
-application (client) ID: yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
-applicaion secret value (don't use secret ID): zzzzzzzzzzz
+register app: sql-msp-server in Microsoft Entra ID  <br>
+application (client) ID: yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy  <br>
+applicaion secret value (don't use secret ID): zzzzzzzzzzz  <br>
 
-grant fabric workspace permissions
-Add your app sql-mcp-server
-Role: Contributor (minimum for SQL DB access)
+grant fabric workspace permissions  <br>
+Add your app sql-mcp-server  <br>
+Role: Contributor (minimum for SQL DB access)  <br>
 
 ### Step 2B - grant permission for the app to access the SQL database
 
--- create Entra-backed database user, run in fabric sql query:
-CREATE USER [sql-mcp-server] FROM EXTERNAL PROVIDER;
-GO
+-- create Entra-backed database user, run in fabric sql query: <br>
+CREATE USER [sql-mcp-server] FROM EXTERNAL PROVIDER;  <br>
+GO <br>
 
--- grant read/write permissions
+-- grant read/write permissions  <br>
 
-ALTER ROLE db_datareader ADD MEMBER [sql-mcp-server];
-ALTER ROLE db_datawriter ADD MEMBER [sql-mcp-server];
+ALTER ROLE db_datareader ADD MEMBER [sql-mcp-server]; <br>
+ALTER ROLE db_datawriter ADD MEMBER [sql-mcp-server]; <br>
 GO
 
 ### Step 2C - build service principal connection string (headless)
 
-$ClientId="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
-$ClientSecret="zzzzzzzzzzz"
+$ClientId="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" <br>
+$ClientSecret="zzzzzzzzzzz" <br>
 
-$ConnStr = @"
-Server=tcp:$Server,$Port;
-Database=$Database;
-Authentication=Active Directory Service Principal;
-User ID=$ClientId;
-Password=$ClientSecret;
-Encrypt=True;
-TrustServerCertificate=False;
-"@ -replace "\r?\n",""
+$ConnStr = @" <br>
+Server=tcp:$Server,$Port;  <br>
+Database=$Database;  <br>
+Authentication=Active Directory Service Principal; <br>
+User ID=$ClientId; <br>
+Password=$ClientSecret; <br>
+Encrypt=True; <br>
+TrustServerCertificate=False; <br>
+"@ -replace "\r?\n",""  <br>
 
-dab init --database-type mssql --host-mode Development --connection-string "$ConnStr"
+dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" <br>
 
 ### Step 3 - re-initialize SQL MCP (DAB config)
 
-dotnet tool run dab init `
-  --database-type mssql `
-  --host-mode Development `
-  --connection-string "$ConnStr"
+dotnet tool run dab init `  <br>
+  --database-type mssql ` <br>
+  --host-mode Development ` <br>
+  --connection-string "$ConnStr"  <br>
 
 If fail, then try the following method:
 
-$Env:SQL_CONNECTION_STRING = `
-"Server=tcp:xxxx.database.fabric.microsoft.com,1433;
-Database=example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;
-Encrypt=True;
-TrustServerCertificate=False;
-Authentication=Active Directory Service Principal;
-User Id=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy;
-Password=zzzzzzzzzzz"
+$Env:SQL_CONNECTION_STRING = `  <br>
+"Server=tcp:xxxx.database.fabric.microsoft.com,1433;  <br>
+Database=example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;  <br>
+Encrypt=True;  <br>
+TrustServerCertificate=False;  <br> 
+Authentication=Active Directory Service Principal;  <br>
+User Id=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy;  <br>
+Password=zzzzzzzzzzz"  <br>
 
-then use @env('SQL_CONNECTION_STRING') in dab-config.json for 'connection-string'.
+then use @env('SQL_CONNECTION_STRING') in dab-config.json for 'connection-string'. <br>
 
 ### Step 4.1 - add a surrogate key
 
-This step is needed if the tables don't have Primary Key.
+This step is needed if the tables don't have Primary Key. <br>
 
-Run the following in Fabric SQL query space:
+Run the following in Fabric SQL query space: <br>
 
-ALTER TABLE dbo.incident
-ADD IncidentPk INT IDENTITY(1,1) NOT NULL;
+ALTER TABLE dbo.incident  <br>
+ADD IncidentPk INT IDENTITY(1,1) NOT NULL;  <br>
 
-ALTER TABLE dbo.incident
-ADD CONSTRAINT PK_incident PRIMARY KEY (IncidentPk);
+ALTER TABLE dbo.incident  <br>
+ADD CONSTRAINT PK_incident PRIMARY KEY (IncidentPk);  <br>
 
-ALTER TABLE dbo.problem
-ADD ProblemPk INT IDENTITY(1,1) NOT NULL;
+ALTER TABLE dbo.problem  <br>
+ADD ProblemPk INT IDENTITY(1,1) NOT NULL; <br>
 
-ALTER TABLE dbo.problem
-ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk);
+ALTER TABLE dbo.problem <br>
+ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk); <br>
 
 ### step 4.2 - update DAB entities to use the surrogate PKs
 
-dotnet tool run dab add incident `
-  --source dbo.incident `
-  --source.type table `
-  --source.key-fields IncidentPk `
-  --permissions "anonymous:*"
+dotnet tool run dab add incident ` <br>
+  --source dbo.incident ` <br>
+  --source.type table ` <br>
+  --source.key-fields IncidentPk ` <br>
+  --permissions "anonymous:*" <br>
 
-dotnet tool run dab add problem `
-  --source dbo.problem `
-  --permissions "anonymous:*" `
-  --key-fields ProblemPk
+dotnet tool run dab add problem ` <br>
+  --source dbo.problem ` <br>
+  --permissions "anonymous:*" ` <br>
+  --key-fields ProblemPk <br>
 
 or you can update dab-config.json directly to reflect the surrogate keys
 
 ### step 5 - start the dab 
-dotnet tool run dab validate
-dotnet tool run dab start
--- This will start MCP in HTTP mode.
 
-dotnet tool run dab start --mcp-stdio role:anonymous
--- This will start MCP in Stdio mode.
+dotnet tool run dab validate <br>
+dotnet tool run dab start <br>
+-- This will start MCP in HTTP mode. <br> 
+
+dotnet tool run dab start --mcp-stdio role:anonymous <br>
+-- This will start MCP in Stdio mode. <br>
 
 step 6 - REST APIs
-http://localhost:5000/api/incident
-http://localhost:5000/api/problem
 
-GraphQL
-http://localhost:5000/graphql
+http://localhost:5000/api/incident <br>
+http://localhost:5000/api/problem <br>
 
-Try the following:
+GraphQL <br>
+http://localhost:5000/graphql <br>
 
-query {
-  incidents {
-    items {
-      IncidentPk
-      RecId
-    }
-  }
-}
+Try the following: <br>
+
+query { <br>
+  incidents { <br>
+    items {  <br>
+      IncidentPk  <br>
+      RecId <br>
+    } <br>
+  } <br>
+}  <br>
 
 MCP endpoint is live at: http://localhost:5000/mcp
 
