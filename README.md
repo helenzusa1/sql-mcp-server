@@ -45,11 +45,11 @@ An UI will be generated for user to retrieve the tables 'incident' and 'problem'
 ### Step 0 - setup DAB tool
 
 In Powershell:
-dotnet new tool-manifest
-dotnet tool install microsoft.dataapibuilder --prerelease
-dotnet tool restore
+dotnet new tool-manifest <br>
+dotnet tool install microsoft.dataapibuilder --prerelease  <br>
+dotnet tool restore  <br>
 
-dotnet dab --version
+dotnet dab --version  <br>
 
 ### Step 1 - setup connection to SQL database
 
@@ -67,24 +67,27 @@ dab init --database-type mssql --host-mode Development --connection-string "$Con
 
 if failed, run this: <br>
 
-dotnet tool run dab init ` <br>
-  --database-type mssql ` <br>
-  --host-mode Development `  <br>
-  --connection-string "$ConnStr"  <br>
+```
+dotnet tool run dab init ` 
+  --database-type mssql `   
+  --host-mode Development `  
+  --connection-string "$ConnStr"  
+```
 
 add tables: <br>
 
-$Tables = @(  <br>
-  "incident",  <br>
-  "problem"  <br>
+```
+$Tables = @(  
+  "incident",  
+  "problem"  
 )
 
-foreach ($t in $Tables) {  <br>
-  dotnet tool run dab add $t `  <br>
-    --source "dbo.$t" `  <br>
-    --permissions "authenticated:*"  <br>
+foreach ($t in $Tables) {  
+  dotnet tool run dab add $t `  
+    --source "dbo.$t" `  
+    --permissions "authenticated:*"  
 }
-
+```
 
 ### Step2A - register app, to use this app identity representing a tenant
 
@@ -113,38 +116,42 @@ GO
 $ClientId="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" <br>
 $ClientSecret="zzzzzzzzzzz" <br>
 
-$ConnStr = @" <br>
-Server=tcp:$Server,$Port;  <br>
-Database=$Database;  <br>
-Authentication=Active Directory Service Principal; <br>
-User ID=$ClientId; <br>
-Password=$ClientSecret; <br>
-Encrypt=True; <br>
-TrustServerCertificate=False; <br>
-"@ -replace "\r?\n",""  <br>
+```
+$ConnStr = @" 
+Server=tcp:$Server,$Port;  
+Database=$Database;  
+Authentication=Active Directory Service Principal; 
+User ID=$ClientId;
+Password=$ClientSecret; 
+Encrypt=True; 
+TrustServerCertificate=False; 
+"@ -replace "\r?\n",""  
+```
 
 dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" <br>
 
 ### Step 3 - re-initialize SQL MCP (DAB config)
 
-dotnet tool run dab init `  <br>
-  --database-type mssql ` <br>
-  --host-mode Development ` <br>
-  --connection-string "$ConnStr"  <br>
-
+```
+dotnet tool run dab init `  
+  --database-type mssql ` 
+  --host-mode Development ` 
+  --connection-string "$ConnStr"  
+```
 If fail, then try the following method:
 
-$Env:SQL_CONNECTION_STRING = `  <br>
-"Server=tcp:xxxx.database.fabric.microsoft.com,1433;  <br>
-Database=example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;  <br>
-Encrypt=True;  <br>
-TrustServerCertificate=False;  <br> 
-Authentication=Active Directory Service Principal;  <br>
-User Id=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy;  <br>
-Password=zzzzzzzzzzz"  <br>
+```
+$Env:SQL_CONNECTION_STRING = `  
+"Server=tcp:xxxx.database.fabric.microsoft.com,1433;  
+Database=example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;  
+Encrypt=True;  
+TrustServerCertificate=False;  
+Authentication=Active Directory Service Principal;  
+User Id=yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy;  
+Password=zzzzzzzzzzz"  
 
-then use @env('SQL_CONNECTION_STRING') in dab-config.json for 'connection-string'. <br>
-
+then use @env('SQL_CONNECTION_STRING') in dab-config.json for 'connection-string'.
+```
 ### Step 4.1 - add a surrogate key
 
 This step is needed if the tables don't have Primary Key. <br>
@@ -166,18 +173,18 @@ ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk); <br>
 ### step 4.2 - update DAB entities to use the surrogate PKs
 
 This repository provides a simple example of setting anonymous persmission on tables. <br>
+```
+dotnet tool run dab add incident ` 
+  --source dbo.incident ` 
+  --source.type table ` 
+  --source.key-fields IncidentPk ` 
+  --permissions "anonymous:*" 
 
-dotnet tool run dab add incident ` <br>
-  --source dbo.incident ` <br>
-  --source.type table ` <br>
-  --source.key-fields IncidentPk ` <br>
-  --permissions "anonymous:*" <br>
-
-dotnet tool run dab add problem ` <br>
-  --source dbo.problem ` <br>
-  --permissions "anonymous:*" ` <br>
-  --key-fields ProblemPk <br>
-
+dotnet tool run dab add problem ` 
+  --source dbo.problem ` 
+  --permissions "anonymous:*" ` 
+  --key-fields ProblemPk 
+```
 or you can update dab-config.json directly to reflect the surrogate keys
 
 ### step 5 - start the dab 
@@ -198,16 +205,16 @@ GraphQL <br>
 http://localhost:5000/graphql <br>
 
 Try the following: <br>
-
-query { <br>
-  incidents { <br>
-    items {  <br>
-      IncidentPk  <br>
-      RecId <br>
-    } <br>
-  } <br>
-}  <br>
-
+```
+query { 
+  incidents { 
+    items {  
+      IncidentPk  
+      RecId 
+    } 
+  } 
+}  
+```
 MCP endpoint is live at: http://localhost:5000/mcp
 
 
