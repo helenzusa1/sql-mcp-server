@@ -115,6 +115,9 @@ ALTER ROLE db_datareader ADD MEMBER [sql-mcp-server];
 ALTER ROLE db_datawriter ADD MEMBER [sql-mcp-server]; 
 GO
 ```
+
+Example of permission is showin in this image. ![Grant permission to the app](./images/Screenshot2.png) and  ![Manage permission of the SQL database](./images/Screenshot3.png)
+
 ### Step 2C - build service principal connection string (headless)
 
 ```
@@ -175,7 +178,7 @@ ADD ProblemPk INT IDENTITY(1,1) NOT NULL;
 ALTER TABLE dbo.problem 
 ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk); 
 ```
-### step 4.2 - update DAB entities to use the surrogate PKs
+### Step 4.2 - update DAB entities to use the surrogate PKs
 
 This repository provides a simple example of setting anonymous persmission on tables. <br>
 ```
@@ -192,7 +195,7 @@ dotnet tool run dab add problem `
 ```
 or you can update dab-config.json directly to reflect the surrogate keys
 
-### step 5 - start the dab 
+### Step 5 - start the dab 
 
 ```
 dotnet tool run dab validate <br>
@@ -202,7 +205,9 @@ dotnet tool run dab start <br>
 dotnet tool run dab start --mcp-stdio role:anonymous <br>
 -- This will start MCP in Stdio mode. <br>
 ```
-step 6 - REST APIs
+### Step 6 - REST APIs
+
+After the DAB is started, you will see these UIs as shown in the image. ![UIs for the SQL database and MCP](./images/Screenshot1.png) 
 
 http://localhost:5000/api/incident <br>
 http://localhost:5000/api/problem <br>
