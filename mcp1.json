@@ -1,0 +1,16 @@
+// use this json then run dab cmmand like this:
+// dotnet tool run dab start --mcp-stdio role:anonymous
+
+{
+  "servers": {
+    "sql-mcp": {
+      "command": "dotnet",
+      "args": [
+        "tool", "run", "dab",
+        "start",
+        "--mcp-stdio",
+        "role:anonymous"
+      ]
+    }
+  }
+}

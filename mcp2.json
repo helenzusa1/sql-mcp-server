@@ -1,0 +1,11 @@
+// Use this json, then start dab this way:
+// dotnet tool run dab start
+
+{
+  "servers": {
+    "sql-mcp-server": {
+      "type": "http",
+      "url": "http://localhost:5000/mcp"
+    }
+  }
+}
