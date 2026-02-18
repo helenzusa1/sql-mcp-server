@@ -45,26 +45,28 @@ An UI will be generated for user to retrieve the tables 'incident' and 'problem'
 ### Step 0 - setup DAB tool
 
 In Powershell:
-dotnet new tool-manifest <br>
-dotnet tool install microsoft.dataapibuilder --prerelease  <br>
-dotnet tool restore  <br>
+```
+dotnet new tool-manifest 
+dotnet tool install microsoft.dataapibuilder --prerelease  
+dotnet tool restore  
 
-dotnet dab --version  <br>
-
+dotnet dab --version  
+```
 ### Step 1 - setup connection to SQL database
 
 Get these from SQL database in fabric, ADO.NET or JDBC connection string: <br>
 
-In Powershell: <br>
-$Server   = "xxxx.database.fabric.microsoft.com" <br>
-$Port     = "1433" <br>
-$Database = "example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" <br>
+In Powershell: 
+```
+$Server   = "xxxx.database.fabric.microsoft.com" 
+$Port     = "1433" 
+$Database = "example_sql_db-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
 
-Common JDBC-style options; adjust if your environment requires something different <br>
-$ConnStr  = "Server=tcp:$Server,$Port;Database=$Database;Encrypt=True;TrustServerCertificate=True;" <br>
+Common JDBC-style options; adjust if your environment requires something different 
+$ConnStr  = "Server=tcp:$Server,$Port;Database=$Database;Encrypt=True;TrustServerCertificate=True;" 
 
-dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" <br>
-
+dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" 
+```
 if failed, run this: <br>
 
 ```
@@ -101,22 +103,24 @@ Role: Contributor (minimum for SQL DB access)  <br>
 
 ### Step 2B - grant permission for the app to access the SQL database
 
--- create Entra-backed database user, run in fabric sql query: <br>
-CREATE USER [sql-mcp-server] FROM EXTERNAL PROVIDER;  <br>
-GO <br>
-
+-- create Entra-backed database user, run in fabric sql query: 
+```
+CREATE USER [sql-mcp-server] FROM EXTERNAL PROVIDER;  
+GO 
+```
 -- grant read/write permissions  <br>
 
-ALTER ROLE db_datareader ADD MEMBER [sql-mcp-server]; <br>
-ALTER ROLE db_datawriter ADD MEMBER [sql-mcp-server]; <br>
+```
+ALTER ROLE db_datareader ADD MEMBER [sql-mcp-server]; 
+ALTER ROLE db_datawriter ADD MEMBER [sql-mcp-server]; 
 GO
-
+```
 ### Step 2C - build service principal connection string (headless)
 
-$ClientId="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" <br>
-$ClientSecret="zzzzzzzzzzz" <br>
-
 ```
+$ClientId="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" 
+$ClientSecret="zzzzzzzzzzz" 
+
 $ConnStr = @" 
 Server=tcp:$Server,$Port;  
 Database=$Database;  
@@ -126,10 +130,10 @@ Password=$ClientSecret;
 Encrypt=True; 
 TrustServerCertificate=False; 
 "@ -replace "\r?\n",""  
+
+
+dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" 
 ```
-
-dab init --database-type mssql --host-mode Development --connection-string "$ConnStr" <br>
-
 ### Step 3 - re-initialize SQL MCP (DAB config)
 
 ```
@@ -158,18 +162,19 @@ This step is needed if the tables don't have Primary Key. <br>
 
 Run the following in Fabric SQL query space: <br>
 
-ALTER TABLE dbo.incident  <br>
-ADD IncidentPk INT IDENTITY(1,1) NOT NULL;  <br>
+```
+ALTER TABLE dbo.incident  
+ADD IncidentPk INT IDENTITY(1,1) NOT NULL;  
 
-ALTER TABLE dbo.incident  <br>
-ADD CONSTRAINT PK_incident PRIMARY KEY (IncidentPk);  <br>
+ALTER TABLE dbo.incident  
+ADD CONSTRAINT PK_incident PRIMARY KEY (IncidentPk);  
 
-ALTER TABLE dbo.problem  <br>
-ADD ProblemPk INT IDENTITY(1,1) NOT NULL; <br>
+ALTER TABLE dbo.problem  
+ADD ProblemPk INT IDENTITY(1,1) NOT NULL; 
 
-ALTER TABLE dbo.problem <br>
-ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk); <br>
-
+ALTER TABLE dbo.problem 
+ADD CONSTRAINT PK_problem PRIMARY KEY (ProblemPk); 
+```
 ### step 4.2 - update DAB entities to use the surrogate PKs
 
 This repository provides a simple example of setting anonymous persmission on tables. <br>
@@ -189,13 +194,14 @@ or you can update dab-config.json directly to reflect the surrogate keys
 
 ### step 5 - start the dab 
 
+```
 dotnet tool run dab validate <br>
 dotnet tool run dab start <br>
 -- This will start MCP in HTTP mode. <br> 
 
 dotnet tool run dab start --mcp-stdio role:anonymous <br>
 -- This will start MCP in Stdio mode. <br>
-
+```
 step 6 - REST APIs
 
 http://localhost:5000/api/incident <br>
