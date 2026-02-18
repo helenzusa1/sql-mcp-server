@@ -49,17 +49,20 @@ Github Copiloc Chat -> select Agent mode -> load the MCP server from .vscode/mcp
 
 Step 3 - run query
 
-READ example:
-prompt: Show me the latest incident.
+READ example: <br>
+```
+Show me the latest incident. 
+```
 ![READ example](./images/Screenshot5.png) 
 
-WRITE example:
+WRITE example: <br> 
+```
 Create a new problem record with
 Title: “Email service outage”
 Description: “Users cannot send or receive emails”
 Severity: “High”
 Status: “Open”
-
+```
 ![WRITE example](./images/Screenshot6.png) 
 
 ### Method 2 - with HTTP mode
