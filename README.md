@@ -198,12 +198,12 @@ or you can update dab-config.json directly to reflect the surrogate keys
 ### Step 5 - start the dab 
 
 ```
-dotnet tool run dab validate <br>
-dotnet tool run dab start <br>
--- This will start MCP in HTTP mode. <br> 
+dotnet tool run dab validate 
+dotnet tool run dab start 
+-- This will start MCP in HTTP mode. 
 
-dotnet tool run dab start --mcp-stdio role:anonymous <br>
--- This will start MCP in Stdio mode. <br>
+dotnet tool run dab start --mcp-stdio role:anonymous 
+-- This will start MCP in Stdio mode. 
 ```
 ### Step 6 - REST APIs
 
@@ -228,4 +228,7 @@ query {
 ```
 MCP endpoint is live at: http://localhost:5000/mcp
 
+### Step 7 - How to run and use the MCP server
+
+Please refer to https://github.com/helenzusa1/sql-mcp-server/blob/main/How-to-Run-MCP.md 
 
