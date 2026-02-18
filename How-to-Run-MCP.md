@@ -36,7 +36,7 @@ prepare .vscode/mcp.json in VS code folder:
   }
 }
 ```
-VS code starts the MCP server for you. The communication is vis stadin/stdout. No HTTP endpoint is used.
+VS code starts the MCP server for you. The communication is via stdin/stdout. No HTTP endpoint is used.
 
 Step 1 - add MCP server in VS code, do it only once.
 
