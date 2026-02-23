@@ -46,12 +46,19 @@ An UI will be generated for user to retrieve the tables 'incident' and 'problem'
 
 In Powershell:
 ```
+mkdir itsm-sql-db
+cd itsm-sql-db
+```
+Then execute all subsequent steps in this folder itsm-sql-db.
+```
 dotnet new tool-manifest 
 dotnet tool install microsoft.dataapibuilder --prerelease  
 dotnet tool restore  
 
 dotnet dab --version  
 ```
+After this step, you will see json configuration file created in the folder you are working on.
+
 ### Step 1 - setup connection to SQL database
 
 Get these from SQL database in fabric, ADO.NET or JDBC connection string: <br>
