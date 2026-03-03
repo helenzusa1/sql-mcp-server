@@ -210,7 +210,9 @@ ShipCountry = 'France'
 
 ```
 ![WRITE example](./images/Screenshot17.png) 
+
 Verify in Fabric SQL database, the new row is created successfully.
+
 ![WRITE example](./images/Screenshot18.png) 
 
 ### Section 3 - switching among MCP servers
