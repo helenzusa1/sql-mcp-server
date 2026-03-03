@@ -1,0 +1,75 @@
+{
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v1.7.86/dab.draft.schema.json",
+  "data-source": {
+    "database-type": "mssql",
+    "connection-string": "Server=tcp:xxxx.database.fabric.microsoft.com,1433;  \nDatabase=northwind-sql-yyyy;  \nEncrypt=True;  \nTrustServerCertificate=False;  \nAuthentication=Active Directory Service Principal;  \nUser Id=uuuu;  \nPassword=pppp",
+    "options": {
+      "set-session-context": false
+    }
+  },
+  "runtime": {
+    "rest": {
+      "enabled": true,
+      "path": "/api",
+      "request-body-strict": true
+    },
+    "graphql": {
+      "enabled": true,
+      "path": "/graphql",
+      "allow-introspection": true
+    },
+    "mcp": {
+      "enabled": true,
+      "path": "/mcp"
+    },
+    "host": {
+      "cors": {
+        "origins": [],
+        "allow-credentials": false
+      },
+      "authentication": {
+        "_comment": "Use AppService for HTTP mode, Simulator for STDIO",
+        "provider": "AppService"
+      },
+      "mode": "development"
+    }
+  },
+
+"entities": {
+  "products": {
+    "source": {
+      "object": "dbo.products",
+      "type": "table",
+      "key-fields": ["ProductID"]
+    },
+    "permissions": [
+      { "_comment": "HTTP / Foundry mode: use 'authenticated'. For local VS Code STDIO testing, use role:anonymous",
+        "role": "authenticated", "actions": [{ "action": "*" }] }
+    ]
+  },
+
+  "orders": {
+    "source": {
+      "object": "dbo.orders",
+      "type": "table",
+      "key-fields": ["OrderID"]
+    },
+    "permissions": [
+      { "_comment": "HTTP / Foundry mode: use 'authenticated'. For local VS Code STDIO testing, use role:anonymous",
+        "role": "authenticated", "actions": [{ "action": "*" }] }
+    ]
+  },
+
+  "order_details": {
+    "source": {
+      "object": "dbo.order_details",
+      "type": "table",
+      "key-fields": ["OrderID", "ProductID"]
+    },
+    "permissions": [
+      { "_comment": "HTTP / Foundry mode: use 'authenticated'. For local VS Code STDIO testing, use role:anonymous",
+        "role": "authenticated", "actions": [{ "action": "*" }] }
+    ]
+  }
+}
+}
