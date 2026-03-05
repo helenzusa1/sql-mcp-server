@@ -112,7 +112,7 @@ VS code starts the MCP server for you. The communication is via stdin/stdout. No
 
 #### Section 2.1 - Step 1: add MCP server in VS code, do it only once.
 
-CTRL + SHIFT + P, MCP: Add Server, Command Stdio, C:/Users/helenzeng/fabric-data/northwind, choose a name, say, northwind-mcp, then 'enter'.
+CTRL + SHIFT + P, MCP: Add Server, Command Stdio, C:/Users/xxxx/project-folder/northwind, choose a name, say, northwind-mcp, then 'enter'.
 
 Then MCP: Start Server -> northwind-mcp.
 
