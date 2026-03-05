@@ -1,0 +1,23 @@
+{
+	"servers": {
+		"itsm-mcp": {
+			"type": "stdio",
+			"command": "C:/Users/xxxx/project-folder/itsm-sql-db",
+			"args": []
+		},
+		"northwind-mcp": {
+			"type": "stdio",
+			"command": "dotnet",
+			"args": [
+				"tool",
+				"run",
+				"dab",
+				"start",
+				"--mcp-stdio",
+				"role:anonymous"
+			],
+			"cwd": "C:/Users/xxxx/project-folder/northwind"
+		}
+	},
+	"inputs": []
+}
