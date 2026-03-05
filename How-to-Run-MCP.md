@@ -77,6 +77,23 @@ Your MCP is ready for the agent to use!
 An example of table READ is shown in ![READ example](./images/Screenshot21.png).
 A table WRITE example is in ![READ example](./images/Screenshot22.png). 
 
+#### Section 1.5 - How to run the MCP server as app service with scalability
+
+When you want a scalable, reusable MCP server, you must host it on Azure App Service as a Web App and attach it to an App Service Plan that you control. This gives you predictable compute, identity integration, and standard scaling knobs (SKU, instances, autoscale).
+
+You creatw a new web app (Linux recommended), publish as 'Code'. <br>
+
+![READ example](./images/Screenshot26.png). 
+
+After the web app is created, use https://your-web-app-name.azurewebsites.net/mcp
+as the MCP endpoint.<br>
+
+![READ example](./images/Screenshot24.png). 
+
+Setting the audience, Configuring the MCP tool, and running the agent in play ground are the same as preiously.
+
+![READ example](./images/Screenshot25.png). 
+
 ### Section 2 - with STDIO mode
 
 Started dab this way: 
