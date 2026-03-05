@@ -148,7 +148,7 @@ C:\Users\xxxx\AppData\Roaming\Code\User{}mcp.json
 		},
 		"northwind-mcp": {
 			"type": "stdio",
-			"command": "C:/Users/helenzeng/fabric-data/northwind",
+			"command": "C:/Users/xxxx/project-folder/northwind",
 			"args": []
 		}
 
